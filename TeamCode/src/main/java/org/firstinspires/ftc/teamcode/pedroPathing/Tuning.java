@@ -106,6 +106,7 @@ public class Tuning extends SelectableOpMode {
     public static void drawCurrentAndHistory() {
         Drawing.drawPoseHistory(poseHistory);
         drawCurrent();
+        //hi
     }
 
     /** This creates a full stop of the robot by setting the drive motors to run at 0 power. */
