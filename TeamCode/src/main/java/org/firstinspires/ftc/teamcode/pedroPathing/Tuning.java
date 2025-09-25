@@ -151,13 +151,13 @@ class LocalizationTest extends OpMode {
      */
     @Override
     public void loop() {
-        follower.setTeleOpDrive(-gamepad1.left_stick_y, -gamepad1.left_stick_x, -gamepad1.right_stick_x, true);
+        follower.setTeleOpDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x, true);
         follower.update();
 
-        telemetryM.debug("x:" + follower.getPose().getX());
-        telemetryM.debug("y:" + follower.getPose().getY());
-        telemetryM.debug("heading:" + follower.getPose().getHeading());
-        telemetryM.debug("total heading:" + follower.getTotalHeading());
+        telemetryM.debug("x:" + Math.round(follower.getPose().getX()));
+        telemetryM.debug("y:" + Math.round(follower.getPose().getY()));
+        telemetryM.debug("heading:" + Math.round(follower.getPose().getHeading()));
+        telemetryM.debug("total heading:" + Math.round(follower.getTotalHeading()));
         telemetryM.update(telemetry);
 
         drawCurrentAndHistory();
@@ -938,7 +938,7 @@ class DriveTuner extends OpMode {
  * @version 1.0, 3/12/2024
  */
 class Line extends OpMode {
-    public static double DISTANCE = 40;
+    public static double DISTANCE = 10;
     private boolean forward = true;
 
     private Path forwards;
