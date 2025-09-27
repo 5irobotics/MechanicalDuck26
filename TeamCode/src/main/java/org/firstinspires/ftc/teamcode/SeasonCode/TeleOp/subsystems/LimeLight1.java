@@ -15,7 +15,7 @@ public class LimeLight1 extends OpMode {
     public void init(){
         limelight3A = hardwareMap.get(Limelight3A.class,"limelight");
 
-        double x = 0;
+
 
 
         limelight3A.pipelineSwitch(4 ); //3 is April tag 20, 4 is 21, 5 is 22, 6 is 23, 7 is 24
