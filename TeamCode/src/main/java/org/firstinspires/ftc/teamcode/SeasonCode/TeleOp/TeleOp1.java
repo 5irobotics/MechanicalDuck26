@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+
+
 import org.firstinspires.ftc.teamcode.SeasonCode.TeleOp.subsystems.Drive1;
 
 @TeleOp
@@ -32,10 +34,10 @@ public class TeleOp1 extends OpMode {
         BLeft  = hardwareMap.get(DcMotor.class, "BLeft");
         BRight  = hardwareMap.get(DcMotor.class, "BRight");
 
-        FLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        FRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        FLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        FRight.setDirection(DcMotorSimple.Direction.REVERSE);
         BLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        BRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        BRight.setDirection(DcMotorSimple.Direction.REVERSE);
         //Arm = hardwareMap.get(DcMotor.class,"spin");
 
         FLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -50,9 +52,7 @@ public class TeleOp1 extends OpMode {
     }
 
     public void loop(){
-        driveSubsystem.Move(gamepad1.right_stick_y,
-                gamepad1.right_stick_x,
-                FLeft, BLeft, FRight, BRight);
+        driveSubsystem.Move();
         driveSubsystem.DPAD(gamepad1.dpad_up,
                 gamepad1.dpad_right,
                 gamepad1.dpad_down,
