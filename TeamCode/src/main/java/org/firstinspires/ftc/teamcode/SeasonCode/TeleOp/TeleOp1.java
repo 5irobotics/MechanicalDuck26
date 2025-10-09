@@ -2,12 +2,12 @@ package org.firstinspires.ftc.teamcode.SeasonCode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-
-
 import org.firstinspires.ftc.teamcode.SeasonCode.TeleOp.subsystems.Drive1;
+import org.firstinspires.ftc.teamcode.SeasonCode.TeleOp.subsystems.MiddlePart1;
 
 @TeleOp
 public class TeleOp1 extends OpMode {
@@ -21,11 +21,14 @@ public class TeleOp1 extends OpMode {
     public DcMotor FRight;
     public DcMotor BLeft;
     public DcMotor BRight;
-    public DcMotor Arm;
+    public DcMotor Intake;
+    public DcMotor Shooter;
+    public CRServo Intake_Helper;
 
     // subsystems
 
     private final Drive1 driveSubsystem = new Drive1();
+    private final MiddlePart1 MiddlePart1 = new MiddlePart1();
 
 
     public void init() {
@@ -33,11 +36,15 @@ public class TeleOp1 extends OpMode {
         FRight  = hardwareMap.get(DcMotor.class, "FRight");
         BLeft  = hardwareMap.get(DcMotor.class, "BLeft");
         BRight  = hardwareMap.get(DcMotor.class, "BRight");
+        Intake  = hardwareMap.get(DcMotor.class, "Intake");
+        Shooter  = hardwareMap.get(DcMotor.class, "Shooter");
+        Intake_Helper  = hardwareMap.get(CRServo.class, "Intake_Helper");
 
-        FLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        FRight.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        FLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        FRight.setDirection(DcMotorSimple.Direction.FORWARD);
         BLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        BRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        BRight.setDirection(DcMotorSimple.Direction.FORWARD);
         //Arm = hardwareMap.get(DcMotor.class,"spin");
 
         FLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -60,6 +67,11 @@ public class TeleOp1 extends OpMode {
                 FLeft, BLeft, FRight, BRight);
         driveSubsystem.rotation(gamepad1.right_bumper, gamepad1.left_bumper,
                 FLeft, BLeft, FRight, BRight);
+       MiddlePart1.Intake(gamepad2.a,
+        Intake, Shooter);
+        MiddlePart1.Shooter(gamepad2.y,
+                Shooter);
+
         //armsubsystem.JoystickMove(gamepad2.right_stick_y, Arm, 1);
     }
 }
