@@ -87,4 +87,82 @@ public class Drive1 {
             telemetry.update();
         }*/
     }
+    public void right_turn(double speed, double flInches, double frInches, double brInches, double blInches, double timeoutS, DcMotor motorfl, DcMotor motorfr, DcMotor motorbr, DcMotor motorbl) {
+        int newFrontLeftTarget, newFrontRightTarget, newBackLeftTarget, newBackRightTarget;
+
+        int flmoveCounts = (int) (flInches * COUNTS_PER_INCH);
+        int frmoveCounts = (int) (frInches * COUNTS_PER_INCH);
+        int brmoveCounts = (int) (brInches * COUNTS_PER_INCH);
+        int blmoveCounts = (int) (blInches * COUNTS_PER_INCH);
+
+        newFrontLeftTarget = motorfl.getCurrentPosition() + flmoveCounts;
+        newBackLeftTarget = motorbl.getCurrentPosition() + frmoveCounts;
+        newFrontRightTarget = motorfr.getCurrentPosition() + brmoveCounts;
+        newBackRightTarget = motorbr.getCurrentPosition() + blmoveCounts;
+
+        motorfl.setTargetPosition(newFrontLeftTarget);
+        motorfr.setTargetPosition(-newFrontRightTarget);
+        motorbl.setTargetPosition(-newBackLeftTarget);
+        motorbr.setTargetPosition(newBackRightTarget);
+
+        motorfl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorfr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorbl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorbr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        runtime.reset();
+
+        motorfl.setPower(Math.abs(speed));
+        motorfr.setPower(Math.abs(speed));
+        motorbl.setPower(Math.abs(speed));
+        motorbr.setPower(Math.abs(speed));
+
+        /*while (opModeIsActive() &&
+                (runtime.seconds() < timeoutS) &&
+                (frontLeft.isBusy() && frontRight.isBusy() &&
+                        backLeft.isBusy() && backRight.isBusy())) {
+            telemetry.addData("Path", "Running to target");
+            telemetry.update();
+        }*/
+    }
+
+
+    public void left_turn(double speed, double flInches, double frInches, double brInches, double blInches, double timeoutS, DcMotor motorfl, DcMotor motorfr, DcMotor motorbr, DcMotor motorbl) {
+        int newFrontLeftTarget, newFrontRightTarget, newBackLeftTarget, newBackRightTarget;
+
+        int flmoveCounts = (int) (flInches * COUNTS_PER_INCH);
+        int frmoveCounts = (int) (frInches * COUNTS_PER_INCH);
+        int brmoveCounts = (int) (brInches * COUNTS_PER_INCH);
+        int blmoveCounts = (int) (blInches * COUNTS_PER_INCH);
+
+        newFrontLeftTarget = motorfl.getCurrentPosition() + flmoveCounts;
+        newBackLeftTarget = motorbl.getCurrentPosition() + frmoveCounts;
+        newFrontRightTarget = motorfr.getCurrentPosition() + brmoveCounts;
+        newBackRightTarget = motorbr.getCurrentPosition() + blmoveCounts;
+
+        motorfl.setTargetPosition(-newFrontLeftTarget);
+        motorfr.setTargetPosition(newFrontRightTarget);
+        motorbl.setTargetPosition(newBackLeftTarget);
+        motorbr.setTargetPosition(-newBackRightTarget);
+
+        motorfl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorfr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorbl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorbr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        runtime.reset();
+
+        motorfl.setPower(Math.abs(speed));
+        motorfr.setPower(Math.abs(speed));
+        motorbl.setPower(Math.abs(speed));
+        motorbr.setPower(Math.abs(speed));
+
+        /*while (opModeIsActive() &&
+                (runtime.seconds() < timeoutS) &&
+                (frontLeft.isBusy() && frontRight.isBusy() &&
+                        backLeft.isBusy() && backRight.isBusy())) {
+            telemetry.addData("Path", "Running to target");
+            telemetry.update();
+        }*/
+    }
 }

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 
 @Autonomous
-public class LimeLight1 extends OpMode {
+public class        LimeLight1 extends OpMode {
 
     private Limelight3A limelight3A;
 

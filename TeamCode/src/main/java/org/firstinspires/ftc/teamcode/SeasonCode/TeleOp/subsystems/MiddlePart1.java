@@ -49,10 +49,20 @@ public class MiddlePart1 extends OpMode {
         }
 
     }
+    public void Belt(double Belt_Joy,
+                     DcMotor Belt){
+        Belt.setPower(Belt_Joy);
+    }
+    public void Flap (boolean Flap_Up, boolean Flap_Down,
+                      Servo Flap) {
+        if (Flap_Up) {
+            Flap.setPosition(0.5);
+        } else if (Flap_Down) {
+            Flap.setPosition(0.8d);
+        }
 
 
-
-}
+    }}
 
 
 
