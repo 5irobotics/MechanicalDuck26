@@ -19,6 +19,12 @@ public class Auto4 extends LinearOpMode {
     public DcMotorEx Intake;
     public DcMotorEx Shooter;
     public CRServo Intake_Helper;
+    private ElapsedTime runtime = new ElapsedTime();
+    static final double COUNTS_PER_MOTOR_REV = 537.6;
+    static final double DRIVE_GEAR_REDUCTION = 1.0;
+    static final double WHEEL_DIAMETER_INCHES = 4.0;
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
 
     // subsystems
 
@@ -45,10 +51,15 @@ public class Auto4 extends LinearOpMode {
         BLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        FLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        FRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        FLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        FLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         telemetry.addData("Status", "Ready to run");
         telemetry.update();
@@ -58,14 +69,31 @@ public class Auto4 extends LinearOpMode {
         if (opModeIsActive()) {
 
 
-            driveSubsystem.fourWheelDrive(1, 5, -5, -5, 5, 5.0,
-                    FLeft, FRight, BRight, BLeft);
+            encoderDriving(1, 10, 10);
+
+            sleep(2000);
+
+            encoderTurn(0.5, -38);
 
             sleep(1000);
 
             Intake.setVelocity(0);
 
-            Shooter.setVelocity(1900);
+            Shooter.setVelocity(2075);
+
+            sleep(4000);
+
+            Intake_Helper.setPower(1);
+
+            sleep(5000);
+
+            Intake.setVelocity(-1000);
+
+            sleep(1000);
+
+            Intake.setVelocity(0);
+
+            Shooter.setVelocity(2075);
 
             sleep(2000);
 
@@ -77,10 +105,14 @@ public class Auto4 extends LinearOpMode {
 
             Shooter.setVelocity(0);
 
-            driveSubsystem.encoderDrive(1, 20, 5.0,
-                    FLeft, FRight, BRight, BLeft);
+            sleep(1000);
 
+            encoderDriving(1, 20, 20);
 
+            sleep(1000);
+
+            Intake.setVelocity(10);
+            Intake.setVelocity(0);
         }
 
         // Stop motion
@@ -90,6 +122,56 @@ public class Auto4 extends LinearOpMode {
         BRight.setPower(0);
 
         // Reset to encoder mode
+        FLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void encoderTurn(double speed, double degrees) {
+        double TURN_DIAMETER_INCHES = 18.0;
+        double TURN_CIRCUMFERENCE = Math.PI * TURN_DIAMETER_INCHES;
+        double TURN_FRACTION = Math.abs(degrees) / 360.0;
+        double TURN_DISTANCE_INCHES = TURN_CIRCUMFERENCE * TURN_FRACTION;
+
+        double leftInches = degrees > 0 ? TURN_DISTANCE_INCHES : -TURN_DISTANCE_INCHES;
+        double rightInches = degrees > 0 ? -TURN_DISTANCE_INCHES : TURN_DISTANCE_INCHES;
+
+        encoderDriving(speed, leftInches, rightInches);
+    }
+
+    public void encoderDriving(double speed, double leftInches, double rightInches) {
+        int moveCountsLeft = (int) (leftInches * COUNTS_PER_INCH);
+        int moveCountsRight = (int) (rightInches * COUNTS_PER_INCH);
+
+        FLeft.setTargetPosition(FLeft.getCurrentPosition() + moveCountsLeft);
+        BLeft.setTargetPosition(BLeft.getCurrentPosition() + moveCountsLeft);
+        FRight.setTargetPosition(FRight.getCurrentPosition() + moveCountsRight);
+        BRight.setTargetPosition(BRight.getCurrentPosition() + moveCountsRight);
+
+        FLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        FRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        BRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        FLeft.setPower(speed);
+        FRight.setPower(speed);
+        BLeft.setPower(speed);
+        BRight.setPower(speed);
+
+        while (opModeIsActive() &&
+                FLeft.isBusy() && FRight.isBusy() &&
+                BLeft.isBusy() && BRight.isBusy()) {
+
+            telemetry.addData("Path", "Driving");
+            telemetry.update();
+        }
+
+        FLeft.setPower(0);
+        FRight.setPower(0);
+        BLeft.setPower(0);
+        BRight.setPower(0);
+
         FLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         FRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

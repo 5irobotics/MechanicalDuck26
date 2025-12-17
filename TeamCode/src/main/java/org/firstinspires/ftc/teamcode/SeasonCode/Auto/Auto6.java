@@ -6,11 +6,11 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.SeasonCode.Auto.subsystems.Drive1;
 
-@Autonomous(name = "BothNO", group = "Auto")
-public class Auto1 extends LinearOpMode {
+@Autonomous(name = "Both10", group = "Auto")
+public class Auto6 extends LinearOpMode {
 
     public DcMotor FLeft;
     public DcMotor FRight;
@@ -57,7 +57,7 @@ public class Auto1 extends LinearOpMode {
 
         if (opModeIsActive()) {
 
-
+            sleep(10000);
             driveSubsystem.encoderDrive(1, -43, 5.0,
                     FLeft, FRight, BRight, BLeft);
 

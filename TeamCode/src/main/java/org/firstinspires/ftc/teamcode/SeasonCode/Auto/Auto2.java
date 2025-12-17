@@ -58,8 +58,11 @@ public class Auto2 extends LinearOpMode {
         if (opModeIsActive()) {
 
             //sleep(2000);
-            driveSubsystem.encoderDrive(1, 20, 5.0,
+            driveSubsystem.encoderDrive(1, 30, 5.0,
                     FLeft, FRight, BRight, BLeft);
+            Intake.setVelocity(1000);
+            sleep(500);
+            Intake.setVelocity(0);
         }
 
         // Stop motion

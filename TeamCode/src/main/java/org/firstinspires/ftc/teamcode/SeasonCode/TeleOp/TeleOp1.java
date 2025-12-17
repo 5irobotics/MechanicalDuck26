@@ -80,7 +80,5 @@ public class TeleOp1 extends OpMode {
         Intake, Intake_Helper);
         middlePart1.Shooter(gamepad2.y, gamepad2.b,
         Shooter);
-        middlePart1.Lift_Off(gamepad2.dpad_down, gamepad2.dpad_up,
-                Lift_OffL, Lift_OffR);
     }
 }

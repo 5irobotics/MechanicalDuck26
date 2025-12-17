@@ -87,4 +87,79 @@ public class Drive1 {
             telemetry.update();
         }*/
     }
+
+    public void rightTurn(double speed, double Inches, double timeoutS, DcMotor motorfl, DcMotor motorfr, DcMotor motorbr, DcMotor motorbl) {
+        int newFrontLeftTarget, newFrontRightTarget, newBackLeftTarget, newBackRightTarget;
+
+        int moveCounts = (int) (Inches * COUNTS_PER_INCH);
+
+        newFrontLeftTarget = motorfl.getCurrentPosition() + moveCounts;
+        newBackLeftTarget = motorbl.getCurrentPosition() + moveCounts;
+        newFrontRightTarget = motorfr.getCurrentPosition() + moveCounts;
+        newBackRightTarget = motorbr.getCurrentPosition() + moveCounts;
+
+        motorfl.setTargetPosition(newFrontLeftTarget);
+        motorfr.setTargetPosition(-newFrontRightTarget);
+        motorbl.setTargetPosition(newBackLeftTarget);
+        motorbr.setTargetPosition(-newBackRightTarget);
+
+        motorfl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorfr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorbl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorbr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        runtime.reset();
+
+        motorfl.setPower(Math.abs(speed));
+        motorfr.setPower(Math.abs(speed));
+        motorbl.setPower(Math.abs(speed));
+        motorbr.setPower(Math.abs(speed));
+
+        /*while (opModeIsActive() &&
+                (runtime.seconds() < timeoutS) &&
+                (frontLeft.isBusy() && frontRight.isBusy() &&
+                        backLeft.isBusy() && backRight.isBusy())) {
+            telemetry.addData("Path", "Running to target");
+            telemetry.update();
+        }*/
+    }
+    public void leftTurn(double speed, double rightInches, double leftInches, double timeoutS, DcMotor motorfl, DcMotor motorfr, DcMotor motorbr, DcMotor motorbl) {
+        int newFrontLeftTarget, newFrontRightTarget, newBackLeftTarget, newBackRightTarget;
+
+        int rightMoveCounts = (int) (rightInches * COUNTS_PER_INCH);
+        int leftMoveCounts = (int) (leftInches * COUNTS_PER_INCH);
+
+        newFrontLeftTarget = motorfl.getCurrentPosition() + leftMoveCounts;
+        newBackLeftTarget = motorbl.getCurrentPosition() + leftMoveCounts;
+        newFrontRightTarget = motorfr.getCurrentPosition() + rightMoveCounts;
+        newBackRightTarget = motorbr.getCurrentPosition() + rightMoveCounts;
+
+        motorfl.setTargetPosition(-newFrontLeftTarget);
+        motorfr.setTargetPosition(newFrontRightTarget);
+        motorbl.setTargetPosition(-newBackLeftTarget);
+        motorbr.setTargetPosition(newBackRightTarget);
+
+        motorfl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorfr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorbl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorbr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        runtime.reset();
+
+        motorfl.setPower(Math.abs(speed));
+        motorfr.setPower(Math.abs(speed));
+        motorbl.setPower(Math.abs(speed));
+        motorbr.setPower(Math.abs(speed));
+
+        /*while (opModeIsActive() &&
+                (runtime.seconds() < timeoutS) &&
+                (frontLeft.isBusy() && frontRight.isBusy() &&
+                        backLeft.isBusy() && backRight.isBusy())) {
+            telemetry.addData("Path", "Running to target");
+            telemetry.update();
+        }*/
+    }
+
+
+
 }
