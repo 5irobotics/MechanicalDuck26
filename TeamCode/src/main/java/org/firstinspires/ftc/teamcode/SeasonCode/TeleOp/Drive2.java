@@ -10,7 +10,7 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
-@TeleOp
+@TeleOp(name="vision", group="TeleOp")
 public class Drive2 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

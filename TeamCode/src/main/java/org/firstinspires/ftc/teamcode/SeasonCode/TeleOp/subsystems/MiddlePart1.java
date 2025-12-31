@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="MIDDLEPART", group="TeleOp")
@@ -14,7 +15,7 @@ public class MiddlePart1 extends OpMode {
 //a
     }
 
-    @Override
+
     public void loop() {
 
     }
@@ -27,13 +28,13 @@ public class MiddlePart1 extends OpMode {
         }
 
     public void Shooter(boolean shooterspeed1, boolean shooterspeed2
-            , DcMotor shooter ){
+            , DcMotorEx shooter ){
         if (shooterspeed1){
-            shooter.setPower(0.81);
+            shooter.setVelocity(2150);
         } else if (shooterspeed2) {
-            shooter.setPower(0.70);
+            shooter.setVelocity(1800);
         } else{
-            shooter.setPower(0);
+            shooter.setVelocity(0);
         }
 
     }

@@ -12,14 +12,14 @@ public class ShooterTest extends OpMode{
 
     public DcMotorEx flywheelMotor;
 
-    public double highvelocity = 1500;
+    public double highvelocity = 2150;
 
-    public double lowvelocity = 900;
+    public double lowvelocity = 1800;
 
     double curTargetVelocity = highvelocity;
 
-    double F = 0;
-    double P = 0;
+    double F = -0.1228;
+    double P = -6.0670;
 
     double[] stepSizes = {10.0, 1.0, 0.1, 0.001, 0.0001};
 
@@ -57,7 +57,6 @@ public class ShooterTest extends OpMode{
         }
         if (gamepad2.dpadRightWasPressed()){
             F += stepSizes[stepIndex];
-
     }
         if (gamepad2.dpadDownWasPressed()){
             P += stepSizes[stepIndex];
@@ -74,7 +73,7 @@ public class ShooterTest extends OpMode{
         //set velocity
         flywheelMotor.setVelocity(curTargetVelocity);
 
-        double curVelocity = flywheelMotor.getVelocity();
+        double curVelocity = -flywheelMotor.getVelocity();
         double error = curTargetVelocity - curVelocity;
 
         telemetry.addData("Target Velocity", curTargetVelocity);

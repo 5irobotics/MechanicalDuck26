@@ -4,13 +4,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 
 
 import org.firstinspires.ftc.teamcode.SeasonCode.TeleOp.subsystems.Drive1nonpp;
 import org.firstinspires.ftc.teamcode.SeasonCode.TeleOp.subsystems.MiddlePart1;
-
+//import org.firstinspires.ftc.teamcode.SeasonCode.TeleOp.subsystems.ShooterTest;
 
 
 @TeleOp(name="TELEOP", group="TeleOp")
@@ -20,16 +22,16 @@ public class TeleOp1 extends OpMode {
     declare variables
 
      */
+    double F = -0.1228;
+    double P = -6.0670;
 
     public DcMotor FLeft;
     public DcMotor FRight;
     public DcMotor BLeft;
     public DcMotor BRight;
     public DcMotor Intake;
-    public DcMotor Shooter;
+    public DcMotorEx Shooter;
     private CRServo Intake_Helper;
-    private Servo Lift_OffR;
-    private Servo Lift_OffL;
     // subsystems
 
     private final Drive1nonpp driveSubsystem = new Drive1nonpp();
@@ -42,10 +44,9 @@ public class TeleOp1 extends OpMode {
         BLeft  = hardwareMap.get(DcMotor.class, "BLeft");
         BRight  = hardwareMap.get(DcMotor.class, "BRight");
         Intake = hardwareMap.get(DcMotor.class, "Intake");
-        Shooter = hardwareMap.get(DcMotor.class, "Shooter");
+        Shooter = hardwareMap.get(DcMotorEx.class, "Shooter");
         Intake_Helper = hardwareMap.get(CRServo.class, "Intake_Helper" );
-//        Lift_OffR = hardwareMap.get(Servo.class, "Lift_OffR");
-//        Lift_OffL = hardwareMap.get(Servo.class, "Lift_OffL");
+
 
         FLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         FRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -54,8 +55,7 @@ public class TeleOp1 extends OpMode {
         Intake.setDirection(DcMotorSimple.Direction.FORWARD);
         Shooter.setDirection(DcMotorSimple.Direction.FORWARD);
         Intake_Helper.setDirection(CRServo.Direction.REVERSE);
-//        Lift_OffR.setDirection(Servo.Direction.FORWARD);
-//        Lift_OffL.setDirection(Servo.Direction.FORWARD);
+
 
         FLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         FRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -71,6 +71,9 @@ public class TeleOp1 extends OpMode {
         BRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         Shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P, 0, 0, F);
+        Shooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
     }
 
     public void loop(){
