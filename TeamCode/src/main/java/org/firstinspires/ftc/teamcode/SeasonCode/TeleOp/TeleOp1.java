@@ -2,95 +2,128 @@ package org.firstinspires.ftc.teamcode.SeasonCode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.*;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-
-import org.firstinspires.ftc.teamcode.SeasonCode.TeleOp.subsystems.Drive1nonpp;
-import org.firstinspires.ftc.teamcode.SeasonCode.TeleOp.subsystems.MiddlePart1;
-
-
-
-@TeleOp(name="TELEOP", group="TeleOp")
+@TeleOp(name="TeleOp_Final", group="Z")
 public class TeleOp1 extends OpMode {
-    /*
 
-    declare variables
+    private DcMotor FLeft, BLeft, FRight, BRight;
+    private DcMotor IntakeMotor, Belt;
+    private DcMotorEx Shooter;
+    private Servo Recycler;
+    private CRServo Kicker;
 
-     */
+    private ElapsedTime actionTimer = new ElapsedTime();
+    private enum State { IDLE, SHOOT_RAMP, SHOOT_FEED, RECYCLE, RESET }
+    private State currentState = State.IDLE;
 
-    public DcMotor FLeft;
-    public DcMotor FRight;
-    public DcMotor BLeft;
-    public DcMotor BRight;
-    public DcMotor Intake;
-    public DcMotor Shooter;
-    private DcMotor Belt;
-    private CRServo Intake_Helper;
-    private Servo Lift_OffR;
-    private Servo Lift_OffL;
-    private Servo Flap;
-    // subsystems
+    // --- TUNING CONSTANTS ---
+    final double SHOOT_VELOCITY = 2250;
+    final double RAMP_TIME = 0.8;
+    final double FEED_TIME = 1.0;
+    final double RECYCLE_TIME = 1.5;
 
-    private final Drive1nonpp driveSubsystem = new Drive1nonpp();
-    private final MiddlePart1 middlePart1 = new MiddlePart1();
+    final double RECYCLER_OPEN = 1.0;
+    final double RECYCLER_CLOSED = 0.0;
+    final double KICKER_SPEED = 1.0;
 
-
+    @Override
     public void init() {
-        FLeft  = hardwareMap.get(DcMotor.class, "FLeft");
-        FRight  = hardwareMap.get(DcMotor.class, "FRight");
-        BLeft  = hardwareMap.get(DcMotor.class, "BLeft");
-        BRight  = hardwareMap.get(DcMotor.class, "BRight");
-        Intake = hardwareMap.get(DcMotor.class, "Intake");
-        Shooter = hardwareMap.get(DcMotor.class, "Shooter");
-        Belt = hardwareMap.get(DcMotor.class,"Belt");
-        Intake_Helper = hardwareMap.get(CRServo.class, "Intake_Helper" );
-        Flap = hardwareMap.get(Servo.class, "Flap");
-//        Lift_OffR = hardwareMap.get(Servo.class, "Lift_OffR");
+        FLeft = hardwareMap.get(DcMotor.class, "FLeft");
+        BLeft = hardwareMap.get(DcMotor.class, "BLeft");
+        FRight = hardwareMap.get(DcMotor.class, "FRight");
+        BRight = hardwareMap.get(DcMotor.class, "BRight");
 
-//        Lift_OffL = hardwareMap.get(Servo.class, "Lift_OffL");
+        IntakeMotor = hardwareMap.get(DcMotor.class, "Intake");
+        Belt = hardwareMap.get(DcMotor.class, "Belt");
+        Recycler = hardwareMap.get(Servo.class, "Recycler");
+        Kicker = hardwareMap.get(CRServo.class, "Kicker");
+        Shooter = hardwareMap.get(DcMotorEx.class, "Shooter");
 
+        FLeft.setDirection(DcMotor.Direction.REVERSE);
+        BLeft.setDirection(DcMotor.Direction.REVERSE);
+        Shooter.setDirection(DcMotor.Direction.REVERSE);
 
-        FLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        FRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        BLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        BRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        Intake.setDirection(DcMotorSimple.Direction.REVERSE);
-        Shooter.setDirection(DcMotorSimple.Direction.REVERSE);
-        Belt.setDirection(DcMotorSimple.Direction.REVERSE);
-        Intake_Helper.setDirection(CRServo.Direction.REVERSE);
-        Flap.setDirection(Servo.Direction.FORWARD );
-//        Lift_OffR.setDirection(Servo.Direction.FORWARD);
-//        Lift_OffL.setDirection(Servo.Direction.FORWARD);
-
-        FLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        FRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        BRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Belt.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-        FLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        FRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        BRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Intake.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Shooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        Belt.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        Kicker.setPower(0);
+        Recycler.setPosition(RECYCLER_CLOSED);
     }
 
-    public void loop(){
-        driveSubsystem.Move(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x,FLeft, BLeft, FRight, BRight);
-        driveSubsystem.slowForward(gamepad1.dpad_down, FLeft, BLeft, FRight, BRight);
-        middlePart1.Intake(gamepad2.right_stick_y, gamepad2.left_stick_y, Intake, Intake_Helper);
-        middlePart1.Shooter(gamepad2.y, gamepad2.b,
-        Shooter);
-        middlePart1.Belt(gamepad2.left_stick_y, Belt);
-        middlePart1.Flap(gamepad2.dpad_up, gamepad2.dpad_down, Flap);
+    @Override
+    public void loop() {
+        // --- DRIVE LOGIC ---
+        double speedMultiplier = gamepad1.left_bumper ? 0.3 : 1.0;
+        double drive = -gamepad1.left_stick_y;
+        double strafe = gamepad1.left_stick_x;
+        double turn = gamepad1.right_stick_x;
+
+        FLeft.setPower((drive + strafe + turn) * speedMultiplier);
+        BLeft.setPower((drive - strafe + turn) * speedMultiplier);
+        FRight.setPower((drive - strafe - turn) * speedMultiplier);
+        BRight.setPower((drive + strafe - turn) * speedMultiplier);
+
+        // --- STATE MACHINE (Automated Actions) ---
+        switch (currentState) {
+            case IDLE:
+                if (gamepad2.x) { // NORMAL SHOOT
+                    actionTimer.reset();
+                    currentState = State.SHOOT_RAMP;
+                } else if (gamepad2.b) { // RECYCLE
+                    actionTimer.reset();
+                    currentState = State.RECYCLE;
+                }
+                break;
+
+            case SHOOT_RAMP:
+                Shooter.setVelocity(SHOOT_VELOCITY);
+                if (actionTimer.seconds() >= RAMP_TIME) {
+                    actionTimer.reset();
+                    currentState = State.SHOOT_FEED;
+                }
+                break;
+
+            case SHOOT_FEED:
+                Shooter.setVelocity(SHOOT_VELOCITY);
+                Belt.setPower(1.0);
+                Kicker.setPower(KICKER_SPEED);
+                if (actionTimer.seconds() >= FEED_TIME) {
+                    currentState = State.RESET;
+                }
+                break;
+
+            case RECYCLE:
+                Belt.setPower(-1.0); // Reverse belt to move element back
+                Recycler.setPosition(RECYCLER_OPEN); // Open the door
+                if (actionTimer.seconds() >= RECYCLE_TIME) {
+                    currentState = State.RESET;
+                }
+                break;
+
+            case RESET:
+                Shooter.setVelocity(0);
+                Belt.setPower(0);
+                Kicker.setPower(0);
+                Recycler.setPosition(RECYCLER_CLOSED);
+                currentState = State.IDLE;
+                break;
+        }
+
+        // --- MANUAL CONTROLS (Only active if not in an automated state) ---
+        if (currentState == State.IDLE) {
+            IntakeMotor.setPower(gamepad2.left_stick_y);
+
+            // Allow manual belt clearing if needed (Right Stick)
+            if (Math.abs(gamepad2.right_stick_y) > 0.1) {
+                Belt.setPower(-gamepad2.right_stick_y);
+            } else {
+                Belt.setPower(0);
+            }
+        }
+
+        // Emergency Kill (Gamepad 2 Left Bumper)
+        if (gamepad2.left_bumper) currentState = State.RESET;
+
+        telemetry.addData("Robot State", currentState);
+        telemetry.update();
     }
 }
